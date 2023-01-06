@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../widgets/widgets.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+
+import 'package:ecommerce_app/widgets/widgets.dart';
+import 'package:ecommerce_app/models/models.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String routeName = '/';
@@ -15,8 +18,35 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        appBar: CustomAppBar(title: 'Ecommerce Shop'),
-        bottomNavigationBar: CustomNavBar());
+    return Scaffold(
+        appBar: const CustomAppBar(title: 'Ecommerce Shop'),
+        bottomNavigationBar: const CustomNavBar(),
+        body: SingleChildScrollView(
+            child: Column(
+          children: [
+            CarouselSlider(
+                options: CarouselOptions(
+                  aspectRatio: 1.5,
+                  viewportFraction: 0.9,
+                  enlargeCenterPage: true,
+                  enlargeStrategy: CenterPageEnlargeStrategy.height,
+                ),
+                items: Category.categories
+                    .map((category) => HeroCarouselCard(category: category))
+                    .toList()),
+            const SectionTitle(title: 'RECOMMENDED'),
+            ProductCarousel(
+              products: Product.products
+                  .where((product) => product.isRecommended)
+                  .toList(),
+            ),
+            const SectionTitle(title: 'MOST POPULAR'),
+            ProductCarousel(
+              products: Product.products
+                  .where((product) => product.isPopular)
+                  .toList(),
+            )
+          ],
+        )));
   }
 }
